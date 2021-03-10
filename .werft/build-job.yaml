@@ -1,0 +1,35 @@
+args:
+- name: version
+  desc: "public facing version name"
+  required: false
+- name: release
+  desc: "do a public release (true/false)"
+  required: true
+pod:
+  containers:
+  - name: build
+    image: golang:1.13-alpine
+    workingDir: /workspace
+    imagePullPolicy: IfNotPresent
+    command:
+      - sh 
+      - -c
+      - |
+        sleep 5
+        echo "[install|PHASE] installing tools"
+        apk add --no-cache sed
+        echo "[build|PHASE] build running"
+        cd /workspace
+        echo hello "{{ .Annotations.version }}"
+        ls
+        sleep 20
+        echo h4
+        echo "[url|RESULT] https://github.com/foo"
+        echo '[url|RESULT] {"payload":"http://heise.de","channels":["github"],"description":"hello world"}'
+  - name: testdb
+    image: mysql:5.7
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: test
+sidecars:
+- testdb
